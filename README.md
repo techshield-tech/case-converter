@@ -5,6 +5,7 @@ Convert text between 15 letter cases, turn any string into a clean URL slug, and
 **Live:** https://techshield-tech.github.io/case-converter/
 
 Part of [MMOALL Developer Tools](https://mmoall.com/tools).
+Also available at [mmoall.com/tools/case-converter](https://mmoall.com/tools/case-converter).
 
 ## Features
 
@@ -28,19 +29,17 @@ Part of [MMOALL Developer Tools](https://mmoall.com/tools).
 - [Vite 6](https://vite.dev/) + [React 19](https://react.dev/) + TypeScript
 - [Tailwind CSS 4](https://tailwindcss.com/) (via `@tailwindcss/vite`)
 - [Bun](https://bun.sh/) as package manager / script runner
-- No runtime dependencies besides React
+- Shared shell/UI/theme/embed/SEO code and the base-path/Tailwind Vite setup come from
+  [`@mmoall/tool-kit`](https://github.com/techshield-tech/tool-kit), the only runtime dependency besides React
 
 ## Project structure
 
 ```
 src/
 ├── main.tsx              # Entry point
-├── index.css             # Tailwind + theme tokens (light/dark)
+├── index.css             # Tailwind import + @mmoall/tool-kit theme tokens (light/dark)
 ├── tool.config.ts        # Tool metadata: slug, name, description, category
-├── shell/                # Shared MMOALL tool shell (same across tool repos)
-│   ├── AppShell.tsx      # Header/footer, theme handling, embed mode
-│   ├── embed.ts          # iframe embed contract (postMessage)
-│   └── ui.tsx            # UI primitives and icons
+├── vite-env.d.ts         # Vite ambient types
 └── tool/                 # Case-converter–specific code
     ├── Tool.tsx          # The tool UI (Case / Slugify / Numeronym tabs)
     ├── ResultRow.tsx     # Labelled read-only value + copy button
@@ -49,6 +48,11 @@ src/
     ├── numeronym.ts      # Numeronym generation
     └── sample.ts         # Sample text
 ```
+
+The shared shell/UI/theme/embed/SEO code (header/footer, theme handling, embed mode, UI
+primitives, iframe postMessage contract) is no longer part of this repo — it's consumed from
+the [`@mmoall/tool-kit`](https://github.com/techshield-tech/tool-kit) npm package instead of a
+local `src/shell/` directory.
 
 ## Running locally
 
@@ -82,7 +86,8 @@ With npm: `npm install`, `npm run dev`, `npm run build`, `npm run preview`.
 
 ### Base path
 
-The asset base URL is chosen at build time in `vite.config.ts`:
+The asset base URL is chosen at build time by the `mmoallTool` preset (from
+`@mmoall/tool-kit/vite`, invoked in `vite.config.ts`):
 
 | Condition               | `base`             | Used for                    |
 | ----------------------- | ------------------ | --------------------------- |
